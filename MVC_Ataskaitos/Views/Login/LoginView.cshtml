@@ -1,0 +1,46 @@
+﻿@model MVC_Ataskaitos.Models.userModel
+
+@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<body> 
+    <div id="login-div"></div>
+    @using (Html.BeginForm(FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td></td>
+                <td style="text-decoration:underline">App Name</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.user_name)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.user_name)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.password)
+                </td>
+                <td>
+                    @Html.EditorFor(model => model.password)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" name="name" value="Login" />
+                </td>
+            </tr>
+        </table>
+    }
+    </div>
+</body>
+</html>

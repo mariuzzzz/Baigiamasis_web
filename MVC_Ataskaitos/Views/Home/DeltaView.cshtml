@@ -1,0 +1,111 @@
+﻿@model List<MVC_Ataskaitos.Models.channelModel>
+<div class="col-sm-12">
+    <table class="table">
+        <tr>
+            <th>
+                channel_ID
+            </th>
+            <th>
+                channel_name
+            </th>
+            <th>
+                show_ID
+            </th>
+            <th>
+                time_start
+            </th>
+            <th>
+                time_stop
+            </th>
+            <th>
+                title
+            </th>
+            <th>
+                delta_start
+            </th>
+            <th>
+                delta_stop
+            </th>
+            <th>
+                moder_status_start
+            </th>
+            <th>
+                moder_status_stop
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.channel_ID
+                </td>
+                <td>
+                    @item.channel_name
+                </td>
+                <td>
+                    @item.show_ID
+                </td>
+                <td>
+                    @item.time_start
+                </td>
+                <td>
+                    @item.time_stop
+                </td>
+                <td>
+                    @item.title
+                </td>
+                <td>
+
+                    @if ((Int32.Parse(item.delta_start) < 1800) && (Int32.Parse(item.delta_start) > -1800))
+                    {
+                        <span style="color:blue;">
+                            @item.delta_start
+                        </span>
+                    }
+                    else if (Int32.Parse(item.delta_start) >= 1800 && Int32.Parse(item.delta_start) < 3600 || Int32.Parse(item.delta_start) <= -1800 && Int32.Parse(item.delta_start) > -3600)
+                    {
+                        <span style="color:orange;">
+                            @item.delta_start
+                        </span>
+                    }
+                    else if (Int32.Parse(item.delta_start) >= 3600 || Int32.Parse(item.delta_start) <= -3600)
+                    {
+                        <span style="color:red;">
+                            @item.delta_start
+                        </span>
+                    }
+
+                </td>
+                <td>
+                    @if ((Int32.Parse(item.delta_stop) < 1800) && (Int32.Parse(item.delta_stop) > -1800))
+                    {
+                        <span style="color:blue;">
+                            @item.delta_stop
+                        </span>
+                    }
+                    else if (Int32.Parse(item.delta_stop) >= 1800 && Int32.Parse(item.delta_stop) < 3600 || Int32.Parse(item.delta_stop) <= -1800 && Int32.Parse(item.delta_stop) > -3600)
+                    {
+                        <span style="color:orange;">
+                            @item.delta_stop
+                        </span>
+                    }
+                    else if (Int32.Parse(item.delta_stop) >= 3600 || Int32.Parse(item.delta_stop) <= -3600)
+                    {
+                        <span style="color:red;">
+                            @item.delta_stop
+                        </span>
+                    }
+                </td>
+                <td>
+                    @item.moder_status_start
+                </td>
+                <td>
+                    @item.moder_status_stop
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

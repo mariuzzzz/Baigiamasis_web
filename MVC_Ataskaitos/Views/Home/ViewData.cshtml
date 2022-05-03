@@ -1,0 +1,185 @@
+﻿@model List<ClassDataLibrary.Models.channelModel>
+
+@{
+    ViewBag.Title = "ViewData";
+    if (Session["ID"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+
+    }
+}
+
+<h2>CHANNEL DATA</h2>
+
+
+@using (Html.BeginForm("ViewData", "Home", FormMethod.Post))
+{
+    @Html.TextBox("deltaText", null, new { @class = "form-control", @placeholder = "Delta", style = "width:200px" })
+    <br />
+    <table>
+        <tr>
+            <td>
+                @Html.TextBox("DateStart", null, new { @class = "form-control", @id = "datepickerFrom", @placeholder = "Data nuo", style = "width:200px" })
+
+            </td>
+            <td>
+                @Html.TextBox("DateStop", null, new { @class = "form-control", @id = "datepickerTo", @placeholder = "Data iki", style = "width:200px" })
+            <td></td>
+            <td>
+                <div id="p3button">
+                    <button type="submit" id="btnFind" name="SearchHistory" value="Save" class="btn btn-primary btn-large">Ieškoti</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+}
+
+
+<table class="table">
+    <tr>
+        <th>
+            channel_ID
+        </th>
+        <th>
+            channel_name
+        </th>
+        <th>
+            show_ID
+        </th>
+        <th>
+            time_start
+        </th>
+        <th>
+            time_stop
+        </th>
+        <th>
+            title
+        </th>
+        <th>
+            delta_start
+        </th>
+        <th>
+            delta_stop
+        </th>
+        <th>
+            moder_status_start
+        </th>
+        <th>
+            moder_status_stop
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.channel_ID
+            </td>
+            <td>
+                @item.channel_name
+            </td>
+            <td>
+                @item.show_ID
+            </td>
+            <td>
+                @item.time_start
+            </td>
+            <td>
+                @item.time_stop
+            </td>
+            <td>
+                @item.title
+            </td>
+            <td>
+
+                @if ((Int32.Parse(item.delta_start) < 1800) && (Int32.Parse(item.delta_start) > -1800))
+                {
+                    <span style="color:blue;">
+                        @item.delta_start
+                    </span>
+                }
+                else if (Int32.Parse(item.delta_start) >= 1800 && Int32.Parse(item.delta_start) < 3600 || Int32.Parse(item.delta_start) <= -1800 && Int32.Parse(item.delta_start) > -3600)
+                {
+                    <span style="color:orange;">
+                        @item.delta_start
+                    </span>
+                }
+                else if (Int32.Parse(item.delta_start) >= 3600 || Int32.Parse(item.delta_start) <= -3600)
+                {
+                    <span style="color:red;">
+                        @item.delta_start
+                    </span>
+                }
+
+            </td>
+            <td>
+                @if ((Int32.Parse(item.delta_stop) < 1800) && (Int32.Parse(item.delta_stop) > -1800))
+                {
+                    <span style="color:blue;">
+                        @item.delta_stop
+                    </span>
+                }
+                else if (Int32.Parse(item.delta_stop) >= 1800 && Int32.Parse(item.delta_stop) < 3600 || Int32.Parse(item.delta_stop) <= -1800 && Int32.Parse(item.delta_stop) > -3600)
+                {
+                    <span style="color:orange;">
+                        @item.delta_stop
+                    </span>
+                }
+                else if (Int32.Parse(item.delta_stop) >= 3600 || Int32.Parse(item.delta_stop) <= -3600)
+                {
+                    <span style="color:red;">
+                        @item.delta_stop
+                    </span>
+                }
+            </td>
+            <td>
+                @item.moder_status_start
+            </td>
+            <td>
+                @item.moder_status_stop
+            </td>
+        </tr>
+    }
+
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#panel1").click(function () {
+            $("#p1").show(300);
+            $("#p2").hide(300);
+            $("#p3button").show(300);
+        });
+        $("#panel2").click(function () {
+            $("#p1").hide();
+            $("#p2").show(300);
+            $("#p3button").show();
+        });
+    });
+</script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+@section scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+}
+
+<script>
+    $(function () {
+        $('#datepickerFrom').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+    });
+</script>
+<script>
+    $(function () {
+        $('#datepickerTo').datepicker({ dateFormat: 'yy-mm-dd' }).val();
+    });
+</script>
+
+
+
+
+
+

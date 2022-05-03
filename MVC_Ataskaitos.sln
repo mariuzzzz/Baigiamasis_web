@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC_Ataskaitos", "MVC_Ataskaitos\MVC_Ataskaitos.csproj", "{AC29A2A2-66B3-4E28-B43A-750AF40A2350}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassDataLibrary", "ClassDataLibrary\ClassDataLibrary.csproj", "{474E47E5-D30D-4361-B5D2-9F3E714E1D49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC29A2A2-66B3-4E28-B43A-750AF40A2350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC29A2A2-66B3-4E28-B43A-750AF40A2350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC29A2A2-66B3-4E28-B43A-750AF40A2350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC29A2A2-66B3-4E28-B43A-750AF40A2350}.Release|Any CPU.Build.0 = Release|Any CPU
+		{474E47E5-D30D-4361-B5D2-9F3E714E1D49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474E47E5-D30D-4361-B5D2-9F3E714E1D49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474E47E5-D30D-4361-B5D2-9F3E714E1D49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474E47E5-D30D-4361-B5D2-9F3E714E1D49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1AB53CF2-7EF7-459E-8526-22B3FBAAD96D}
+	EndGlobalSection
+EndGlobal

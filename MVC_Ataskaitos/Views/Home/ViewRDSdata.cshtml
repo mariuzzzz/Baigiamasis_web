@@ -1,0 +1,63 @@
+﻿@model List<ClassDataLibrary.Models.RDSmodel>
+
+@{
+    ViewBag.Title = "ViewRDSdata";
+    if (Session["ID"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+
+    }
+}
+
+<h2>RDS DATA</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            sender_id
+        </th>
+        <th>
+           sender_name
+        </th>
+        <th>
+            title
+        </th>
+        <th>
+            artist
+        </th>
+        <th>
+            rdsTimeStampCreated
+        </th>
+        
+        <th>
+            show_title
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @item.sender_id
+        </td>
+        <td>
+            @item.sender_name
+        </td>
+        <td>
+            @item.title
+        </td>
+        <td>
+            @item.artist
+        </td>
+        <td>
+            @item.rdsTimeStampCreated
+        </td>
+       
+        <td>
+            @item.show_title
+        </td>
+    </tr>
+}
+
+</table>
