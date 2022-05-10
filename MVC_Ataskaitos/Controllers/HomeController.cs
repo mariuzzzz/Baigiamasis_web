@@ -8,6 +8,7 @@ using static ClassDataLibrary.Logic.Ataskaitos;
 using System.Globalization;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace MVC_Ataskaitos.Controllers
 {
@@ -32,7 +33,7 @@ namespace MVC_Ataskaitos.Controllers
             return View();
         }
 
-        public ActionResult ViewData(string deltaText, string DateStart, string DateStop)
+        public ActionResult ViewData(string deltaText, string DateStart, string DateStop, string errorsOnly)
         {
             ViewBag.Message = "Channel list";
             List<userModel> data = new List<userModel>();
@@ -40,30 +41,35 @@ namespace MVC_Ataskaitos.Controllers
             List<channelModel> channels = new List<channelModel>();
             CultureInfo provider = CultureInfo.InvariantCulture;
             int deltaFromText = 0;
-            if (Int32.TryParse(deltaText, out deltaFromText))
+            if (type != null)
             {
-
-                if (!string.IsNullOrEmpty(DateStart?.ToString()) && !string.IsNullOrEmpty(DateStop?.ToString()))
-                    CheckDeltasWithDate(channels, deltaFromText, DateStart, DateStop, type.ToString());
-                else if (!string.IsNullOrEmpty(DateStart?.ToString()) && string.IsNullOrEmpty(DateStop?.ToString()))
-                    CheckDeltasWithOneDate(channels, deltaFromText, DateStart, type.ToString());
-                else if (!string.IsNullOrEmpty(DateStop?.ToString()) && string.IsNullOrEmpty(DateStart?.ToString()))
-                    CheckDeltasWithOneSecondDate(channels, deltaFromText, DateStop, type.ToString());
+                if (Int32.TryParse(deltaText, out deltaFromText))
+                {
+                        if (!string.IsNullOrEmpty(DateStart?.ToString()) && !string.IsNullOrEmpty(DateStop?.ToString()))
+                            CheckDeltasWithDate(channels, deltaFromText, DateStart, DateStop, type.ToString(), errorsOnly);
+                        else if (!string.IsNullOrEmpty(DateStart?.ToString()) && string.IsNullOrEmpty(DateStop?.ToString()))
+                            CheckDeltasWithOneDate(channels, deltaFromText, DateStart, type.ToString(), errorsOnly);
+                        else if (!string.IsNullOrEmpty(DateStop?.ToString()) && string.IsNullOrEmpty(DateStart?.ToString()))
+                            CheckDeltasWithOneSecondDate(channels, deltaFromText, DateStop, type.ToString(), errorsOnly);
+                        else
+                            CheckDeltas(channels, deltaFromText, type.ToString(), errorsOnly);
+                }
                 else
-                    CheckDeltas(channels, deltaFromText, type.ToString());
+                {
+                    if (!string.IsNullOrEmpty(DateStart?.ToString()) && !string.IsNullOrEmpty(DateStop?.ToString()))
+                        CheckDeltasWithDate(channels, 1200, DateStart, DateStop, type.ToString(), errorsOnly);
+                    else if (!string.IsNullOrEmpty(DateStart?.ToString()) && string.IsNullOrEmpty(DateStop?.ToString()))
+                        CheckDeltasWithOneDate(channels, 1200, DateStart, type.ToString(), errorsOnly);
+                    else if (!string.IsNullOrEmpty(DateStop?.ToString()) && string.IsNullOrEmpty(DateStart?.ToString()))
+                        CheckDeltasWithOneSecondDate(channels, 1200, DateStop, type.ToString(), errorsOnly);
+                    else
+                        CheckDeltas(channels, 1200, type.ToString(), errorsOnly);
+
+                }
             }
             else
-            {
-                if (!string.IsNullOrEmpty(DateStart?.ToString()) && !string.IsNullOrEmpty(DateStop?.ToString()))
-                    CheckDeltasWithDate(channels, 1200, DateStart, DateStop, type.ToString());
-                else if (!string.IsNullOrEmpty(DateStart?.ToString()) && string.IsNullOrEmpty(DateStop?.ToString()))
-                    CheckDeltasWithOneDate(channels, 1200, DateStart, type.ToString());
-                else if (!string.IsNullOrEmpty(DateStop?.ToString()) && string.IsNullOrEmpty(DateStart?.ToString()))
-                    CheckDeltasWithOneSecondDate(channels, 1200, DateStop, type.ToString());
-                else
-                    CheckDeltas(channels, 1200, type.ToString());
-                    
-            }
+                RedirectToAction("Index", "Login");
+            
 
             List<channelModel> sorted = channels.OrderBy(o => o.channel_ID).ThenBy(o => o.time_start).ToList();
             return View(sorted);
@@ -75,11 +81,16 @@ namespace MVC_Ataskaitos.Controllers
             CultureInfo provider = CultureInfo.InvariantCulture;
             var type = Session["type"];
             List<RDSmodel> data = new List<RDSmodel>();
-            if (type.ToString() == "admin")
+            if (type != null)
             {
-                data = LoadRDS();
+                if (type.ToString() == "admin")
+                {
+                    data = LoadRDS();
+                }
             }
-            
+            else
+                RedirectToAction("Index", "Login");
+
             List<RDSmodel> rds = new List<RDSmodel>();
             foreach (var row in data)
             {
@@ -107,7 +118,7 @@ namespace MVC_Ataskaitos.Controllers
             }
             return View(rds);
         }
-        public void CheckDeltas(List<channelModel> channels, int deltaFromText, string type )
+        public void CheckDeltas(List<channelModel> channels, int deltaFromText, string type, string errorsOnly )
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
             
@@ -117,7 +128,11 @@ namespace MVC_Ataskaitos.Controllers
             {
                 if (type.ToString() == "admin")
                 {
-                    data = LoadChannels();
+                    if (errorsOnly != "true")
+                        data = LoadChannels();
+                    else
+                        data = LoadErrorChannels();
+
                     AddToChannels(channels, deltaFromText, null, null, data);
                 }
                 else
@@ -125,14 +140,17 @@ namespace MVC_Ataskaitos.Controllers
                     clientChannels = LoadClientChannels(type.ToString());
                     foreach(var r in clientChannels)
                     {
-                        data = LoadChannelsForClient(r.channel_id);
-                        AddToChannels(channels, deltaFromText, null, null, data); 
+                        if(errorsOnly != "true")
+                            data = LoadChannelsForClient(r.channel_id);
+                        else
+                            data = LoadErrorChannelsForClient(r.channel_id);
+                        AddToChannels(channels, deltaFromText, null, null, data);
                     }
                 }
                
             }
         }
-        public void CheckDeltasWithDate(List<channelModel> channels, int deltaFromText, string dateStart, string dateStop, string type)
+        public void CheckDeltasWithDate(List<channelModel> channels, int deltaFromText, string dateStart, string dateStop, string type, string errorsOnly)
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
             var data = new List<channelModel>();
@@ -141,7 +159,10 @@ namespace MVC_Ataskaitos.Controllers
             {
                 if (type.ToString() == "admin")
                 {
-                    data = LoadChannelsTimeBoth(dateStart, dateStop);
+                    if(errorsOnly != "true")
+                        data = LoadChannelsTimeBoth(dateStart, dateStop);
+                    else
+                        data = LoadErrorChannelsTimeBoth(dateStart, dateStop);
                     AddToChannels(channels, deltaFromText, dateStart, dateStop, data);
                 }
                 else
@@ -149,13 +170,16 @@ namespace MVC_Ataskaitos.Controllers
                     clientChannels = LoadClientChannels(type.ToString());
                     foreach (var r in clientChannels)
                     {
-                        data = LoadChannelsTimeBothForClient(dateStart, dateStop, r.channel_id);
+                        if (errorsOnly != "true")
+                            data = LoadChannelsTimeBothForClient(dateStart, dateStop, r.channel_id);
+                        else
+                            data = LoadErrorChannelsTimeBothForClient(dateStart, dateStop, r.channel_id);
                         AddToChannels(channels, deltaFromText, dateStart, dateStop, data);
                     }
                 }
             }
         }
-        public void CheckDeltasWithOneDate(List<channelModel> channels, int deltaFromText, string dateStart, string type)
+        public void CheckDeltasWithOneDate(List<channelModel> channels, int deltaFromText, string dateStart, string type, string errorsOnly)
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
             var data = new List<channelModel>();
@@ -164,7 +188,10 @@ namespace MVC_Ataskaitos.Controllers
             {
                 if (type.ToString() == "admin")
                 {
-                    data = LoadChannelsTimeFirst(dateStart);
+                    if (errorsOnly != "true")
+                        data = LoadChannelsTimeFirst(dateStart);
+                    else
+                        data = LoadErrorChannelsTimeFirst(dateStart);
                     AddToChannels(channels, deltaFromText, dateStart, null, data);
                 }
                 else
@@ -172,13 +199,16 @@ namespace MVC_Ataskaitos.Controllers
                     clientChannels = LoadClientChannels(type.ToString());
                     foreach (var r in clientChannels)
                     {
-                        data = LoadChannelsTimeFirstForClient(dateStart, r.channel_id);
+                        if (errorsOnly != "true")
+                            data = LoadChannelsTimeFirstForClient(dateStart, r.channel_id);
+                        else
+                            data = LoadErrorChannelsTimeFirstForClient(dateStart, r.channel_id);
                         AddToChannels(channels, deltaFromText, dateStart, null, data);
                     }
                 }
             }
         }
-        public void CheckDeltasWithOneSecondDate(List<channelModel> channels, int deltaFromText, string dateStop, string type)
+        public void CheckDeltasWithOneSecondDate(List<channelModel> channels, int deltaFromText, string dateStop, string type, string errorsOnly)
         {
             CultureInfo provider = CultureInfo.InvariantCulture;
             var data = new List<channelModel>();
@@ -187,7 +217,10 @@ namespace MVC_Ataskaitos.Controllers
             {
                 if (type.ToString() == "admin")
                 {
-                    data = LoadChannelsTimeSecond(dateStop);
+                    if (errorsOnly != "true")
+                        data = LoadChannelsTimeSecond(dateStop);
+                    else
+                        data = LoadErrorChannelsTimeSecond(dateStop);
                     AddToChannels(channels, deltaFromText, null, dateStop, data);
                 }
                 else
@@ -195,7 +228,10 @@ namespace MVC_Ataskaitos.Controllers
                     clientChannels = LoadClientChannels(type.ToString());
                     foreach (var r in clientChannels)
                     {
-                        data = LoadChannelsTimeSecondForClient(dateStop, r.channel_id);
+                        if (errorsOnly != "true")
+                            data = LoadChannelsTimeSecondForClient(dateStop, r.channel_id);
+                        else
+                            data = LoadErrorChannelsTimeSecondForClient(dateStop, r.channel_id);
                         AddToChannels(channels, deltaFromText, null, dateStop, data);
                     }
                 }
@@ -203,6 +239,7 @@ namespace MVC_Ataskaitos.Controllers
         }
         public void AddToChannels(List<channelModel> channels, int deltaFromText, string dateStop, string dateStart, List<channelModel> data)
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
             foreach (var row in data)
             {
                 if ((!string.IsNullOrEmpty(row.delta_start)) && (!string.IsNullOrEmpty(row.delta_stop)))
@@ -211,10 +248,14 @@ namespace MVC_Ataskaitos.Controllers
                     int val_stop = Int32.Parse(row.delta_stop);
                     if (val_start > deltaFromText || val_start < -deltaFromText || val_stop > deltaFromText || val_stop < -deltaFromText)
                     {
-                        string dateStringStart = row.time_start.ToString();
-                        string dateStringStop = row.time_stop.ToString();
-                        string format = "M/d/yyyy h:mm:ss tt zzz";
-                        DateTime start;
+                        string format = "yyyy-MM-dd hh:mm:ss.ss zzz";
+                        string dateStringStart = row.time_start.ToString(format);
+                        string dateStringStop = row.time_stop.ToString(format);
+                        //string format = "M/dd/yyyy h:mm:ss tt zzz";
+                        
+                        //File.WriteAllText
+                       // provider = new CultureInfo("fr-FR");
+                       DateTime start;
                         DateTime stop;
                         start = DateTime.ParseExact(dateStringStart, format, CultureInfo.InvariantCulture);
                         stop = DateTime.ParseExact(dateStringStop, format, CultureInfo.InvariantCulture);
@@ -229,7 +270,9 @@ namespace MVC_Ataskaitos.Controllers
                             delta_start = row.delta_start,
                             delta_stop = row.delta_stop,
                             moder_status_start = row.moder_status_start,
-                            moder_status_stop = row.moder_status_stop
+                            moder_status_stop = row.moder_status_stop,
+                            start_error_type = row.start_error_type,
+                            stop_error_type = row.stop_error_type
                         });
                     }
                 }

@@ -19,7 +19,9 @@ namespace ClassDataLibrary.Models
         public string delta_stop { get; set; }
         public string moder_status_start { get; set; }
         public string moder_status_stop { get; set; }
-
         public string channel_name { get; set; }
+        public string start_error_type { get; set; }
+        public string stop_error_type { get; set; }
+        public Nullable<bool> errorsOnly { get; set; }
     }
 }

@@ -14,8 +14,22 @@
 
 @using (Html.BeginForm("ViewData", "Home", FormMethod.Post))
 {
-    @Html.TextBox("deltaText", null, new { @class = "form-control", @placeholder = "Delta", style = "width:200px" })
+    <table>
+        <tr>
+            <td>
+                @Html.TextBox("deltaText", null, new { @class = "form-control", @placeholder = "Delta", style = "width:200px" })
+            </td>
+            <td>
+                <span class="checkbox-label">  With errors only  </span>
+                    <input type="checkbox" name="errorsOnly" value="true" />
+
+            </td>
+        </tr>
+    </table>
+    
+    
     <br />
+
     <table>
         <tr>
             <td>
@@ -34,7 +48,6 @@
     </table>
 
 }
-
 
 <table class="table">
     <tr>
@@ -67,6 +80,12 @@
         </th>
         <th>
             moder_status_stop
+        </th>
+        <th>
+            start error type
+        </th>
+        <th>
+            stop error type
         </th>
         <th></th>
     </tr>
@@ -139,6 +158,12 @@
             </td>
             <td>
                 @item.moder_status_stop
+            </td>
+            <td>
+                @item.start_error_type
+            </td>
+            <td>
+                @item.stop_error_type
             </td>
         </tr>
     }
