@@ -33,7 +33,7 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsTimeBothForClient(string start, string stop, string id)
         {
-            string sql = "select * from show_details where time_start >= '" + start + "' AND time_start <= '" + stop + " 23:59:59.00' AND channel_ID = '" + id + "' AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start >= '" + start + "' AND time_start <= '" + stop + " 23:59:59.00' AND channel_ID = '" + id + "' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadChannelsTimeBoth(string start, string stop)
@@ -43,17 +43,17 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsTimeBoth(string start, string stop)
         {
-            string sql = "select * from show_details where time_start >= '" + start + "' AND time_start <= '" + stop + " 23:59:59.00' AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start >= '" + start + "' AND time_start <= '" + stop + " 23:59:59.00' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadChannelsTimeFirstForClient(string start, string id)
         {
-            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE()AND channel_ID = '" + id + "'";
+            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE() AND channel_ID = '" + id + "'";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadErrorChannelsTimeFirstForClient(string start, string id)
         {
-            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE()AND channel_ID = '" + id + "'AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE() AND channel_ID = '" + id + "' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadChannelsTimeFirst(string start)
@@ -63,7 +63,7 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsTimeFirst(string start)
         {
-            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE() AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start >= '" + start + "' AND time_stop <= GETDATE() AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadChannelsTimeSecondForClient(string stop, string id)
@@ -73,7 +73,7 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsTimeSecondForClient(string stop, string id)
         {
-            string sql = "select * from show_details where time_start <= '" + stop + " 23:59:59.00'AND channel_ID = '" + id + "' AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start <= '" + stop + " 23:59:59.00'AND channel_ID = '" + id + "' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<channelModel> LoadChannelsTimeSecond(string stop)
@@ -83,7 +83,7 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsTimeSecond(string stop)
         {
-            string sql = "select * from show_details where time_start <= '" + stop + " 23:59:59.00' AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where time_start <= '" + stop + " 23:59:59.00' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
         public static List<userModel> LoadUsers(string login, string password)
@@ -103,7 +103,7 @@ namespace ClassDataLibrary.Logic
         }
         public static List<channelModel> LoadErrorChannelsForClient(string id)
         {
-            string sql = "select * from show_details where channel_ID = '" + id + "' AND moder_status_start != '0' OR moder_status_stop != '0'";
+            string sql = "select * from show_details where channel_ID = '" + id + "' AND (moder_status_start != '0' OR moder_status_stop != '0')";
             return SqlDataAccess.LoadData<channelModel>(sql);
         }
 

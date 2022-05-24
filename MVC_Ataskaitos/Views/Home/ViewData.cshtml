@@ -11,7 +11,6 @@
 
 <h2>CHANNEL DATA</h2>
 
-
 @using (Html.BeginForm("ViewData", "Home", FormMethod.Post))
 {
     <table>
@@ -21,13 +20,13 @@
             </td>
             <td>
                 <span class="checkbox-label">  With errors only  </span>
-                    <input type="checkbox" name="errorsOnly" value="true" />
+                <input id="checkBox" type="checkbox" class="save-cb-state" name="errorsOnly" value="true" />
 
             </td>
         </tr>
     </table>
-    
-    
+
+
     <br />
 
     <table>
@@ -184,6 +183,51 @@
             $("#p3button").show();
         });
     });
+</script>
+
+<script>
+    // Avoid scoping issues by encapsulating code inside anonymous function
+    (function () {
+        // variable to store our current state
+        var cbstate;
+
+        // bind to the onload event
+        window.addEventListener('load', function () {
+            // Get the current state from localstorage
+            // State is stored as a JSON string
+            cbstate = JSON.parse(localStorage['CBState'] || '{}');
+
+            // Loop through state array and restore checked
+            // state for matching elements
+            for (var i in cbstate) {
+                var el = document.querySelector('input[name="' + i + '"]');
+                if (el) el.checked = true;
+            }
+
+            // Get all checkboxes that you want to monitor state for
+            var cb = document.getElementsByClassName('save-cb-state');
+
+            // Loop through results and ...
+            for (var i = 0; i < cb.length; i++) {
+
+                //bind click event handler
+                cb[i].addEventListener('click', function (evt) {
+                    // If checkboxe is checked then save to state
+                    if (this.checked) {
+                        cbstate[this.name] = true;
+                    }
+
+                    // Else remove from state
+                    else if (cbstate[this.name]) {
+                        delete cbstate[this.name];
+                    }
+
+                    // Persist state
+                    localStorage.CBState = JSON.stringify(cbstate);
+                });
+            }
+        });
+    })();
 </script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
